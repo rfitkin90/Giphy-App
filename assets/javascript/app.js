@@ -46,6 +46,9 @@ $(document).ready(function () {
 
                     // appends rating to each gif div
                     $(`#${gifID}-div`).append(`<p>Rating: ${response.data.data[i].rating.toUpperCase()}</p>`);
+
+                    // append "add to favorites" button
+                    $(`#${gifID}-div`).append(`<button class='btn'></button>`)
                 }
 
                 // on click to pause or animate each gif
