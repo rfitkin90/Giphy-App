@@ -27,3 +27,12 @@ html,body {
     padding-top: 10px;
     padding-left: 10px;
 }
+
+#favorites-title {
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
+#favorites-panel .gif-div {
+    padding-top: 10px;
+}
