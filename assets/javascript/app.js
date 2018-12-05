@@ -24,16 +24,19 @@ $(document).ready(function () {
     var favoritesArray = JSON.parse(localStorage.getItem("favorites"));
     $('#gif-favorites-panel').empty();
     for (var i = 0; i < favoritesArray.length; i++) {
-        appendGif(favoritesArray[i].id, favoritesArray[i].img, favoritesArray[i].gif, favoritesArray[i].rating, '-favorites-');
+        appendGif(favoritesArray[i].id, favoritesArray[i].img, 
+            favoritesArray[i].gif, favoritesArray[i].rating, '-favorites-');
     }
 
     // creates gifs(with a favorite button if not creating the gif in the favorites div)
     function appendGif(gifID, gifStillSrc, gifAnimatedSrc, gifRating, appendLocation) {
         // appends div to screen for each gif
         if (appendLocation === '-') {
-            $(`#gif${appendLocation}panel`).prepend(`<div class='gif-div' id='${gifID}${appendLocation}div'></div>`);
+            $(`#gif${appendLocation}panel`).prepend(`<div class='gif-div' 
+                id='${gifID}${appendLocation}div'></div>`);
         } else if (appendLocation === '-favorites-') {
-            $(`#gif${appendLocation}panel`).append(`<div class='gif-div' id='${gifID}${appendLocation}div'></div>`);
+            $(`#gif${appendLocation}panel`).append(`<div class='gif-div' 
+                id='${gifID}${appendLocation}div'></div>`);
         }
         // appends still image to div of corresponding id
         $(`#${gifID}${appendLocation}div`).append(`<img class='cat-gif' src='${gifStillSrc}' 
@@ -43,16 +46,20 @@ $(document).ready(function () {
         // append "add to favorites" button
         $(`#${gifID}${appendLocation}div`).append(`<div class='btn-flexbox'></div>`)
         if (appendLocation === '-') {
-            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-btn' data-index='${i}' data-id='${gifID}' 
-                data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' data-rating='${gifRating}'>Add to favorites</button>`);
+            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-btn' 
+                data-index='${i}' data-id='${gifID}' data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' 
+                data-rating='${gifRating}'>Add to favorites</button>`);
         } else if (appendLocation === '-favorites-') {
-            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-remove-btn' data-index='${i}' data-id='${gifID}' 
-            data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' data-rating='${gifRating}'>Remove from favorites</button>`);
+            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-remove-btn' 
+                data-index='${i}' data-id='${gifID}' data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' 
+                data-rating='${gifRating}'>Remove from favorites</button>`);
         }
-        $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn download-btn' data-download='${gifAnimatedSrc}'><i class='fa fa-download'></i></button>`);
+        // append download button
+        $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn download-btn' 
+            data-download='${gifAnimatedSrc}'><i class='fa fa-download'></i></button>`);
     }
 
-    $('.download-btn').click(function() {
+    $('.download-btn').click(function () {
         window.location = $(this).attr('data-download');
     });
 
@@ -86,7 +93,8 @@ $(document).ready(function () {
     // when clicking a button
     $(document).on('click', '.cat-button', function () {
         console.log(`Button Clicked: ${$(this).text()}`);
-        var queryURL = `http://api.giphy.com/v1/gifs/search?q=${$(this).text()}&api_key=t0ZbKcgIFae6eHmCqLFoyUsNVYx5lbaT`;
+        var queryURL = `http://api.giphy.com/v1/gifs/search?q=${$(this).text()}
+            &api_key=t0ZbKcgIFae6eHmCqLFoyUsNVYx5lbaT`;
         axios.get(queryURL)
             .then(function (response) {
                 console.log(response);
@@ -113,7 +121,8 @@ $(document).ready(function () {
                     if (j === -1) {
                         // push ID to favorites array
                         favoritesArray = JSON.parse(localStorage.getItem("favorites"));
-                        favoritesArray.push(JSON.parse(`{ "id": "${gifID}", "img": "${gifStillSrc}", "gif": "${gifAnimatedSrc}", "rating": "${gifRating}"}`));
+                        favoritesArray.push(JSON.parse(`{ "id": "${gifID}", "img": "${gifStillSrc}", 
+                            "gif": "${gifAnimatedSrc}", "rating": "${gifRating}"}`));
                         console.log(favoritesArray);
                         localStorage.setItem('favorites', JSON.stringify(favoritesArray));
 
