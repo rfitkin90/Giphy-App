@@ -15,6 +15,7 @@ $(document).ready(function () {
     $(document).on('click', '#create-new-btn', function (e) {
         e.preventDefault();
         $('#buttons').append(`<button class='btn cat-button'>${$('#search').val().trim()}</button>`);
+        $('#search').val('');
     });
 
     // array of objects with properties relating to favorited gifs
@@ -38,16 +39,22 @@ $(document).ready(function () {
         $(`#${gifID}${appendLocation}div`).append(`<img class='cat-gif' src='${gifStillSrc}' 
             id='${gifID}-gif' alt='cat gif' data-altSrc='${gifAnimatedSrc}' />`);
         // appends rating to each gif div
-        $(`#${gifID}${appendLocation}div`).append(`<p>Rating: ${gifRating}</p>`);
+        $(`#${gifID}${appendLocation}div`).append(`<p class='rating-p'>Rating: ${gifRating}</p>`);
         // append "add to favorites" button
+        $(`#${gifID}${appendLocation}div`).append(`<div class='btn-flexbox'></div>`)
         if (appendLocation === '-') {
-            $(`#${gifID}${appendLocation}div`).append(`<button class='btn favorites-btn' data-index='${i}' data-id='${gifID}' 
+            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-btn' data-index='${i}' data-id='${gifID}' 
                 data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' data-rating='${gifRating}'>Add to favorites</button>`);
         } else if (appendLocation === '-favorites-') {
-            $(`#${gifID}${appendLocation}div`).append(`<button class='btn favorites-remove-btn' data-index='${i}' data-id='${gifID}' 
+            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-remove-btn' data-index='${i}' data-id='${gifID}' 
             data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' data-rating='${gifRating}'>Remove from favorites</button>`);
         }
+        $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn download-btn' data-download='${gifAnimatedSrc}'><i class='fa fa-download'></i></button>`);
     }
+
+    $('.download-btn').click(function() {
+        window.location = $(this).attr('data-download');
+    });
 
     // remove gif from favorites
     $(document).on('click', '.favorites-remove-btn', function () {
@@ -116,5 +123,11 @@ $(document).ready(function () {
                 });
             });
         ;
+    });
+
+    $('.btn').hover(function () {
+        $(this).css({ 'background-color': '#3f8683', 'border-color': '#3f8683' });
+    }, function () {
+        $(this).css({ 'background-color': '#4aaaa5', 'border-color': '#4aaaa5' });
     });
 });
