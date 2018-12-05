@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
     // array of initial button names
     var topics = [
         "Abyssinian Cat", "Aegean Cat", "American Bobtail Cat", "American Curl Cat", "American Polydactyl Cat",
@@ -18,6 +17,65 @@ $(document).ready(function () {
         $('#buttons').append(`<button class='btn cat-button'>${$('#search').val().trim()}</button>`);
     });
 
+    // array of objects with properties relating to favorited gifs
+    var favoritesArray = [];
+    // append favorites to screen on refresh
+    var favoritesArray = JSON.parse(localStorage.getItem("favorites"));
+    $('#gif-favorites-panel').empty();
+    for (var i = 0; i < favoritesArray.length; i++) {
+        appendGif(favoritesArray[i].id, favoritesArray[i].img, favoritesArray[i].gif, favoritesArray[i].rating, '-favorites-');
+    }
+
+    // creates gifs(with a favorite button if not creating the gif in the favorites div)
+    function appendGif(gifID, gifStillSrc, gifAnimatedSrc, gifRating, appendLocation) {
+        // appends div to screen for each gif
+        if (appendLocation === '-') {
+            $(`#gif${appendLocation}panel`).prepend(`<div class='gif-div' id='${gifID}${appendLocation}div'></div>`);
+        } else if (appendLocation === '-favorites-') {
+            $(`#gif${appendLocation}panel`).append(`<div class='gif-div' id='${gifID}${appendLocation}div'></div>`);
+        }
+        // appends still image to div of corresponding id
+        $(`#${gifID}${appendLocation}div`).append(`<img class='cat-gif' src='${gifStillSrc}' 
+            id='${gifID}-gif' alt='cat gif' data-altSrc='${gifAnimatedSrc}' />`);
+        // appends rating to each gif div
+        $(`#${gifID}${appendLocation}div`).append(`<p>Rating: ${gifRating}</p>`);
+        // append "add to favorites" button
+        if (appendLocation === '-') {
+            $(`#${gifID}${appendLocation}div`).append(`<button class='btn favorites-btn' data-index='${i}' data-id='${gifID}' 
+                data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' data-rating='${gifRating}'>Add to favorites</button>`);
+        } else if (appendLocation === '-favorites-') {
+            $(`#${gifID}${appendLocation}div`).append(`<button class='btn favorites-remove-btn' data-index='${i}' data-id='${gifID}' 
+            data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' data-rating='${gifRating}'>Remove from favorites</button>`);
+        }
+    }
+
+    // remove gif from favorites
+    $(document).on('click', '.favorites-remove-btn', function () {
+        // redeclare gif ID based on the favorite button's data-id attribute
+        var gifID = $(this).attr('data-id');
+        // get favorites from local storage
+        favoritesArray = JSON.parse(localStorage.getItem("favorites"));
+        // find the index w/ the ID identical to the remove button's data-id value
+        var j = favoritesArray.findIndex(j => j.id === gifID);
+        // splice that index out
+        favoritesArray.splice(j, 1);
+        // put array back into local storage
+        localStorage.setItem("favorites", JSON.stringify(favoritesArray));
+        // remove the div containing the gif from favorites panel
+        $(`#${gifID}-favorites-div`).remove();
+        console.log(favoritesArray);
+    });
+
+    // on click to pause or animate each gif
+    $(document).on('click', '.cat-gif', function () {
+        // sets source to a variable
+        var oldSrc = $(this).attr('src');
+        // sets the current data-altSrc as the new source
+        $(this).attr('src', $(this).attr('data-altSrc'));
+        // sets the old src as the new data-altSrc(so they swap places like in bubble sort)
+        $(this).attr('data-altSrc', oldSrc);
+    });
+
     // when clicking a button
     $(document).on('click', '.cat-button', function () {
         console.log(`Button Clicked: ${$(this).text()}`);
@@ -25,100 +83,37 @@ $(document).ready(function () {
         axios.get(queryURL)
             .then(function (response) {
                 console.log(response);
-                localStorage.setItem
-                // array that consists of ID #s of gifs already in favorites section
-                var favoritesArray = [];
-
-                // append favorited gifs from local storage upon refresh
-                // favoritesArray = JSON.parse(localStorage.getItem('favorites'));
-                // console.log(favoritesArray);
-                // for (var i = 0; i < favoritesArray.length; i++) {
-                //     // to favorite-panel div, with i=the clicked button's data-index value
-                //     appendGif('#favorites-panel', i);
-                // }
-
                 // appends 10 gifs to screen
                 for (var i = 0; i < 10; i++) {
-                    // to gif-panel div, with i=i
-                    appendGif('#gif-panel', i);
-                }
-
-                // on click to pause or animate each gif
-                $(document).on('click', '.cat-gif', function () {
-                    // sets source to a variable
-                    var oldSrc = $(this).attr('src');
-
-                    // sets the current value as the new source
-                    $(this).attr('src', $(this).val());
-
-                    // sets the old src as the new value(so they swap places like in bubble sort)
-                    $(this).val(oldSrc);
-                });
-
-                // on click to append gif to favorites section
-                $(document).on('click', '.favorites-btn', function () {
-                    // redeclare gif ID based on favorite buttons data-id attribute
-                    var gifID = $(this).attr('data-id');
-
-                    // only append if gif isn't already in favorites
-                    if (!favoritesArray.includes(gifID)) {
-                        // to favorite-panel div, with i=the clicked button's data-index value
-                        appendGif('#favorites-panel', $(this).attr('data-index'));
-
-                        // store favorites array in local storage after modifying the array
-                        localStorage.setItem('favorites', JSON.stringify(favoritesArray));
-                    }
-                });
-
-                $(document).on('click', '.favorites-remove-btn', function () {
-                    // redeclare gif ID based on favorite buttons data-id attribute
-                    var gifID = $(this).attr('data-id');
-
-                    // remove the div w/ the ID corresponding to the remove button and splice ID from array
-                    $(`#${gifID}-div`).remove();
-                    favoritesArray.splice(favoritesArray.indexOf(gifID), 1);
-                    console.log(favoritesArray);
-
-                    // store favorites array in local storage after modifying the array
-                    localStorage.setItem('favorites', JSON.stringify(favoritesArray));
-                });
-
-                // creates gifs(with a favorite button if not creating the gif in the favorites div)
-                function appendGif(location, i) {
                     // vars for id and still/animated images sources
                     var gifID = response.data.data[i].id;
                     var gifStillSrc = response.data.data[i].images.fixed_height_still.url;
                     var gifAnimatedSrc = response.data.data[i].images.fixed_height.url;
-
-                    // appends div to screen for each gif
-                    if (location === '#gif-panel') {
-                        $(location).prepend(`<div class='gif-div' id='${gifID}-div'></div>`);
-                    } else if (location === '#favorites-panel') {
-                        $(location).append(`<div class='gif-div' id='${gifID}-div'></div>`);
-                    }
-
-                    // appends still image to div of corresponding id
-                    $(`#${gifID}-div`).append(`<img class='cat-gif' src='${gifStillSrc}' 
-                        id='${gifID}-gif' alt='cat gif' />`);
-
-                    // sets the value of img to its corresponding animated img src
-                    $(`#${gifID}-gif`).val(gifAnimatedSrc);
-
-                    // appends rating to each gif div
-                    $(`#${gifID}-div`).append(`<p>Rating: ${response.data.data[i].rating.toUpperCase()}</p>`);
-
-                    if (location === '#gif-panel') {
-                        // append "add to favorites" button
-                        $(`#${gifID}-div`).append(`<button class='btn favorites-btn' data-index='${i}' data-id='${gifID}'>Add to favorites</button>`);
-
-                        /* add remove from favorites button if appending to favorites panel; also check favorites array to see
-                        if the gif's ID is already there so the same one can't be appended multiple times*/
-                    } else if (location === '#favorites-panel') {
-                        $(`#${gifID}-div`).append(`<button class='btn favorites-remove-btn' data-index='${i}' data-id='${gifID}'>Remove from favorites</button>`);
-                        favoritesArray.push(gifID);
-                        console.log(favoritesArray);
-                    }
+                    var gifRating = response.data.data[i].rating.toUpperCase();
+                    appendGif(gifID, gifStillSrc, gifAnimatedSrc, gifRating, '-');
                 }
+                // on click to append gif to favorites section
+                $(document).on('click', '.favorites-btn', function () {
+                    /* redeclare ID/img srcs based on favorite data attributes(so imgs are no longer
+                        tied to their response property path in the case of multiple responses)*/
+                    var gifID = $(this).attr('data-id');
+                    var gifStillSrc = $(this).attr('data-img');
+                    var gifAnimatedSrc = $(this).attr('data-gif');
+                    var gifRating = $(this).attr('data-rating');
+                    // see if there is an element in favoritesArray with the same ID you're trying to add
+                    var j = favoritesArray.findIndex(j => j.id === gifID)
+                    // if not, add it
+                    if (j === -1) {
+                        // push ID to favorites array
+                        favoritesArray = JSON.parse(localStorage.getItem("favorites"));
+                        favoritesArray.push(JSON.parse(`{ "id": "${gifID}", "img": "${gifStillSrc}", "gif": "${gifAnimatedSrc}", "rating": "${gifRating}"}`));
+                        console.log(favoritesArray);
+                        localStorage.setItem('favorites', JSON.stringify(favoritesArray));
+
+                        // append to favorites panel
+                        appendGif(gifID, gifStillSrc, gifAnimatedSrc, gifRating, '-favorites-');
+                    }
+                });
             });
         ;
     });
