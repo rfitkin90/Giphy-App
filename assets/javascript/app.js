@@ -20,12 +20,14 @@ $(document).ready(function () {
 
     // array of objects with properties relating to favorited gifs
     var favoritesArray = [];
-    // append favorites to screen on refresh
-    var favoritesArray = JSON.parse(localStorage.getItem("favorites"));
     $('#gif-favorites-panel').empty();
-    for (var i = 0; i < favoritesArray.length; i++) {
-        appendGif(favoritesArray[i].id, favoritesArray[i].img, 
-            favoritesArray[i].gif, favoritesArray[i].rating, '-favorites-');
+    if (favoritesArray.length >= 1) {
+        // append favorites to screen on refresh
+        favoritesArray = JSON.parse(localStorage.getItem("favorites"));
+        for (var i = 0; i < favoritesArray.length; i++) {
+            appendGif(favoritesArray[i].id, favoritesArray[i].img,
+                favoritesArray[i].gif, favoritesArray[i].rating, '-favorites-');
+        }
     }
 
     // creates gifs(with a favorite button if not creating the gif in the favorites div)
@@ -55,8 +57,10 @@ $(document).ready(function () {
                 data-rating='${gifRating}'>Remove from favorites</button>`);
         }
         // append download button
-        $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn download-btn' 
-            data-download='${gifAnimatedSrc}'><i class='fa fa-download'></i></button>`);
+        $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`
+            <a href="${gifAnimatedSrc}" download>
+                <button class='btn download-btn'>
+                <i class='fa fa-download'></i></button></a>`);
     }
 
     $('.download-btn').click(function () {
@@ -116,7 +120,7 @@ $(document).ready(function () {
                     var gifAnimatedSrc = $(this).attr('data-gif');
                     var gifRating = $(this).attr('data-rating');
                     // see if there is an element in favoritesArray with the same ID you're trying to add
-                    var j = favoritesArray.findIndex(j => j.id === gifID)
+                    var j = favoritesArray.findIndex(j => j.id === gifID);
                     // if not, add it
                     if (j === -1) {
                         // push ID to favorites array
