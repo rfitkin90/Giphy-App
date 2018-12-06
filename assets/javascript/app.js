@@ -6,24 +6,34 @@ $(document).ready(function () {
         "Balinese Cat", "Bambino Cat", "Bengal Cat", "Birman Cat", "Burmese Cat", "Exotic Shorthair Cat",
         "Maine Coon Cat", "Munchkin Cat", "Scottish Fold Cat", "Siamese Cat", "Sphynx Cat"
     ];
+    var lowercaseArray = [];
 
     // appends buttons to screen
     for (var i = 0; i < topics.length; i++) {
         $('#buttons').append(`<button class='btn cat-button'>${topics[i]}</button>`);
     }
 
+    // on click to add new topic buttons
     $(document).on('click', '#create-new-btn', function (e) {
         e.preventDefault();
-        $('#buttons').append(`<button class='btn cat-button'>${$('#search').val().trim()}</button>`);
-        $('#search').val('');
+        // any way to make this case insensitivity logic more efficient?
+        for (i = 0; i < topics.length; i++) {
+            var lowercaseTopic = topics[i].toLowerCase();
+            lowercaseArray.push(lowercaseTopic);
+        }
+        if ($('#search').val().trim() !== '' && !lowercaseArray.includes($('#search').val().trim().toLowerCase())) {
+            $('#buttons').append(`<button class='btn cat-button'>${$('#search').val().trim()}</button>`);
+            topics.push($('#search').val().trim());
+            $('#search').val('');
+        }
+        lowercaseArray = [];
     });
 
     // array of objects with properties relating to favorited gifs
     var favoritesArray = [];
-    $('#gif-favorites-panel').empty();
+    favoritesArray = JSON.parse(localStorage.getItem("favorites"));
     if (favoritesArray.length >= 1) {
         // append favorites to screen on refresh
-        favoritesArray = JSON.parse(localStorage.getItem("favorites"));
         for (var i = 0; i < favoritesArray.length; i++) {
             appendGif(favoritesArray[i].id, favoritesArray[i].img,
                 favoritesArray[i].gif, favoritesArray[i].rating, '-favorites-');
@@ -46,26 +56,16 @@ $(document).ready(function () {
         // appends rating to each gif div
         $(`#${gifID}${appendLocation}div`).append(`<p class='rating-p'>Rating: ${gifRating}</p>`);
         // append "add to favorites" button
-        $(`#${gifID}${appendLocation}div`).append(`<div class='btn-flexbox'></div>`)
         if (appendLocation === '-') {
-            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-btn' 
+            $(`#${gifID}${appendLocation}div`).append(`<button class='btn favorites-btn' 
                 data-index='${i}' data-id='${gifID}' data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' 
                 data-rating='${gifRating}'>Add to favorites</button>`);
         } else if (appendLocation === '-favorites-') {
-            $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`<button class='btn favorites-remove-btn' 
+            $(`#${gifID}${appendLocation}div`).append(`<button class='btn favorites-remove-btn' 
                 data-index='${i}' data-id='${gifID}' data-img='${gifStillSrc}' data-gif='${gifAnimatedSrc}' 
                 data-rating='${gifRating}'>Remove from favorites</button>`);
         }
-        // append download button
-        $(`#${gifID}${appendLocation}div .btn-flexbox`).append(`
-            <a href="${gifAnimatedSrc}" download>
-                <button class='btn download-btn'>
-                <i class='fa fa-download'></i></button></a>`);
     }
-
-    $('.download-btn').click(function () {
-        window.location = $(this).attr('data-download');
-    });
 
     // remove gif from favorites
     $(document).on('click', '.favorites-remove-btn', function () {
@@ -138,9 +138,23 @@ $(document).ready(function () {
         ;
     });
 
+    // btn hover bg-color change
     $('.btn').hover(function () {
         $(this).css({ 'background-color': '#3f8683', 'border-color': '#3f8683' });
     }, function () {
         $(this).css({ 'background-color': '#4aaaa5', 'border-color': '#4aaaa5' });
     });
+
+    // hide/show favorites btn
+    $(document).on('click', '#toggle-favorites-btn', function (e) {
+        e.preventDefault();
+        if ($(this).text() === 'Hide Favorites') {
+            $('#gif-favorites-panel').hide();
+            $(this).text('Show Favorites');
+        } else {
+            $('#gif-favorites-panel').show();
+            $(this).text('Hide Favorites');
+        }
+    });
+
 });

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Giphy App</title>
+    <title>Cat Gif Generator</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="./assets/css/reset.css">
@@ -18,6 +18,15 @@
 </head>
 
 <body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="game-header-box">
+                    <p id="game-header">Cat Gif Generator</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container">
         <div class="row">
             <div class="col panel">
@@ -35,10 +44,10 @@
                         <input class="form-control" id="search" type="text" placeholder="Cat breed name" name="cat-breed">
                         <button id="create-new-btn" class="btn btn-primary">Submit</button>
                         <p id="favorites-title">Favorites: </p>
+                        <button class="btn" id="toggle-favorites-btn">Hide Favorites</button>
                     </form>
                 </div>
-                <div id="gif-favorites-panel">
-                </div>
+                <div id="gif-favorites-panel"></div>
             </div>
             <div class="col-md-8 panel">
                 <div id="gif-panel"></div>
