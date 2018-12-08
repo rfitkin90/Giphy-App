@@ -28,10 +28,16 @@ $(document).ready(function () {
         }
         lowercaseArray = [];
     });
-
+    
     // array of objects with properties relating to favorited gifs
     var favoritesArray = [];
+    // attempt to grab objects from local storage
     favoritesArray = JSON.parse(localStorage.getItem("favorites"));
+    console.log(favoritesArray);
+    // if local storage is empty, array will become null instead of empty array; in that case, reinstate empty array
+    if (favoritesArray === null) {
+        favoritesArray = [];
+    }
     if (favoritesArray.length >= 1) {
         // append favorites to screen on refresh
         for (var i = 0; i < favoritesArray.length; i++) {
@@ -40,7 +46,7 @@ $(document).ready(function () {
         }
     }
 
-    // creates gifs(with a favorite button if not creating the gif in the favorites div)
+    // creates gifs in main div or favorites div depending on parameters
     function appendGif(gifID, gifStillSrc, gifAnimatedSrc, gifRating, appendLocation) {
         // appends div to screen for each gif
         if (appendLocation === '-') {
@@ -124,12 +130,10 @@ $(document).ready(function () {
                     // if not, add it
                     if (j === -1) {
                         // push ID to favorites array
-                        favoritesArray = JSON.parse(localStorage.getItem("favorites"));
                         favoritesArray.push(JSON.parse(`{ "id": "${gifID}", "img": "${gifStillSrc}", 
                             "gif": "${gifAnimatedSrc}", "rating": "${gifRating}"}`));
                         console.log(favoritesArray);
                         localStorage.setItem('favorites', JSON.stringify(favoritesArray));
-
                         // append to favorites panel
                         appendGif(gifID, gifStillSrc, gifAnimatedSrc, gifRating, '-favorites-');
                     }
