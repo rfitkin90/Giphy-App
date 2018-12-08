@@ -67,6 +67,11 @@ html,body {
     padding-top: 10px;
 }
 
+#favorites-separator {
+    margin-top: 10px;
+    border: 1px solid #777777;
+}
+
 .btn-flexbox {
     display: flex;
     flex-direction: row;
