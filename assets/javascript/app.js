@@ -103,7 +103,7 @@ $(document).ready(function () {
     // when clicking a button
     $(document).on('click', '.cat-button', function () {
         console.log(`Button Clicked: ${$(this).text()}`);
-        var queryURL = `http://api.giphy.com/v1/gifs/search?q=${$(this).text()}
+        var queryURL = `https://api.giphy.com/v1/gifs/search?q=${$(this).text()}
             &api_key=t0ZbKcgIFae6eHmCqLFoyUsNVYx5lbaT`;
         axios.get(queryURL)
             .then(function (response) {
